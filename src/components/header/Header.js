@@ -1,16 +1,35 @@
 import { Container, Navbar, Nav } from 'react-bootstrap';
-import { TODOAppState } from '../../Context';
+import { useNavigate } from 'react-router-dom';
+import { RoutesConfig } from '../../constants/constant';
+import { CurrencyExchangeAppState } from '../../store/context/Context';
 
 const Header = () => {
-    const { setState } = TODOAppState() || { setState: function () { } };
+    const navigate = useNavigate();
 
-    return (<Navbar aria-label='tv show header' data-testid="header" bg='dark' variant='dark' className='app-header'>
+    //Global application state for exchange details results
+    const { dispatchExchangeHistory } = CurrencyExchangeAppState();
+
+    //navigate to dashboard page
+    const navigateClickExchange = () => {
+        //clear history state when manually click on navigation
+        dispatchExchangeHistory({ type: "CURRENCY_EXCHANGE_INPUT", payload: {} });
+        navigate(RoutesConfig.dashboard);
+    };
+
+    //navigate to history page
+    const navigateClickHistory = () => {
+        navigate(RoutesConfig.history);
+    };
+
+    return (<Navbar aria-label='exchange app header' data-testid="header" bg='dark' variant='dark' className='app-header'>
         <Container>
             <Navbar.Brand className='flex-header--item-left'>
-                <span>TODO APP</span>
+                <div className="tab">
+                    <button onClick={navigateClickExchange} className="tablinks">Exchange</button>
+                    <button onClick={navigateClickHistory} className="tablinks">History</button>
+                </div>
             </Navbar.Brand>
             <Navbar.Brand className='flex-header--item-right'>
-                <button data-testid="header-btn" onClick={() => setState({ isAddToDoShow: true })} className='button'>Add TODO</button>
             </Navbar.Brand>
         </Container>
         <Nav></Nav>
